@@ -1,10 +1,11 @@
 from flask import Flask
 from flask_restful import reqparse, Resource, Api
 from flask.ext.cors import CORS
-from . import config
 import requests
 import json
  
+import config
+
 app = Flask(__name__)
 CORS(app) # required for Cross-origin Request Sharing
 api = Api(app)
