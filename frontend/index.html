@@ -24,7 +24,7 @@
       results = $('#results');
       results.html('Loading...');
       $('#total').text('');
-      $.get( "http://127.0.0.1:5000/api/v1/search", {"q": $(this).val()}, function( data ) {
+      $.get( "/api/v1/search", {"q": $(this).val()}, function( data ) {
         console.log(data);
         results.html('');
         $('#total').text(data.total);
