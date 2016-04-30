@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <title>your-rows</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="http://fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+  <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    $("#query").keyup(function(){
+      $("#main").animate({"margin-top": "5%"}, "fast");
+      results = $('#results');
+      results.html('Loading...');
+      $('#total').text('');
+      $.get( "http://127.0.0.1:5000/api/v1/search", {"q": $(this).val()}, function( data ) {
+        console.log(data);
+        results.html('');
+        $('#total').text(data.total);
+        $.each(data.results, function(id, result) {
+            var li = $('<li/>')
+                .appendTo(results);
+            var t = $('<h5/>')
+                .append($('<a/>')
+                  .attr('href','http://www.europeandataportal.eu/data/en/dataset/'+result.id)
+                  .text(result.title))
+                .appendTo(li);
+            // var t = $('<p/>')
+            //     .text(result.notes)
+            //     .appendTo(li);
+            var table = $('<table/>')
+              .appendTo(li);
+            // header
+            var th = $('<tr/>')
+                .appendTo(table);
+            $.each(result.schema, function(i, att) {
+              var a = $('<th/>')
+                  .text(att)
+                  .appendTo(th);
+            });
+            $.each(result.rows, function(i, row) {
+              var tr = $('<tr/>')
+                  .appendTo(table);
+              $.each(row, function(i, d) {
+                var v = $('<td/>')
+                    .text(d)
+                    .appendTo(tr);
+              });
+            });
+        });
+      });
+    })
+  })
+  </script>
+
+</head>
+<body>
+
+  <div class="container">
+    <div class="row">
+      <div class="" style="margin-top: 25%" id="main">
+        <h1>your-rows</h1>
+        <div class="row">
+          <div class="six columns">
+            <input class="u-full-width" type="text" placeholder="your pet subject" id="query">
+          </div>
+          <div class="six columns" id="total"></div>
+        </div>
+        <p>
+          <ul id="results">
+          </ul>
+        </p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
