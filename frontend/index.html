@@ -25,55 +25,62 @@
     });
 
     results = $('#results');
+
+    var timeoutID = null;
+
     $("#query").keyup(function(){
-      var query = $(this).val();
-      if (query == "") {
-        results.html('');
-        $("#main").animate({"margin-top": "25%"}, "fast");
-        $.get( "/api/v1/count", function( count ) {
-          $('#total').text(count + ' rows');
-        });
-      } else {
-        results.html('Loading...');
-        $("#main").animate({"margin-top": "5%"}, "fast");
-        $('#total').text('');
-        $.get( "/api/v1/search", {"q": query}, function( data ) {
-          console.log(data);
+      clearTimeout(timeoutID);
+      var target = $(this);
+      timeoutID = setTimeout(function() {
+        var query = target.val();
+        if (query == "") {
           results.html('');
-          $('#total').text(data.total + ' rows');
-          $.each(data.results, function(id, result) {
-              var li = $('<li/>')
-                  .appendTo(results);
-              var t = $('<h5/>')
-                  .append($('<a/>')
-                    .attr('href','http://www.europeandataportal.eu/data/en/dataset/'+result.id)
-                    .text(result.title))
-                  .appendTo(li);
-              // var t = $('<p/>')
-              //     .text(result.notes)
-              //     .appendTo(li);
-              var table = $('<table/>')
-                .appendTo(li);
-              // header
-              var th = $('<tr/>')
-                  .appendTo(table);
-              $.each(result.schema, function(i, att) {
-                var a = $('<th/>')
-                    .text(att)
-                    .appendTo(th);
-              });
-              $.each(result.rows, function(i, row) {
-                var tr = $('<tr/>')
-                    .appendTo(table);
-                $.each(row, function(i, d) {
-                  var v = $('<td/>')
-                      .text(d)
-                      .appendTo(tr);
-                });
-              });
+          $("#main").animate({"margin-top": "25%"}, "fast");
+          $.get( "/api/v1/count", function( count ) {
+            $('#total').text(count + ' rows');
           });
-        });
-      }
+        } else {
+          results.html('Loading...');
+          $("#main").animate({"margin-top": "5%"}, "fast");
+          $('#total').text('');
+          $.get( "/api/v1/search", {"q": query}, function( data ) {
+            console.log(data);
+            results.html('');
+            $('#total').text(data.total + ' rows');
+            $.each(data.results, function(id, result) {
+                var li = $('<li/>')
+                    .appendTo(results);
+                var t = $('<h5/>')
+                    .append($('<a/>')
+                      .attr('href','http://www.europeandataportal.eu/data/en/dataset/'+result.id)
+                      .text(result.title))
+                    .appendTo(li);
+                // var t = $('<p/>')
+                //     .text(result.notes)
+                //     .appendTo(li);
+                var table = $('<table/>')
+                  .appendTo(li);
+                // header
+                var th = $('<tr/>')
+                    .appendTo(table);
+                $.each(result.schema, function(i, att) {
+                  var a = $('<th/>')
+                      .text(att)
+                      .appendTo(th);
+                });
+                $.each(result.rows, function(i, row) {
+                  var tr = $('<tr/>')
+                      .appendTo(table);
+                  $.each(row, function(i, d) {
+                    var v = $('<td/>')
+                        .text(d)
+                        .appendTo(tr);
+                  });
+                });
+            });
+          });
+        }
+      }, 500); 
     })
   })
   </script>
