@@ -12,6 +12,20 @@ api = Api(app)
 
 parser = reqparse.RequestParser()
 
+class CountRows(Resource):
+ 
+    def get(self):
+        # the base URL for a "schemas" object in Elasticsearch, e.g.
+        # http://localhost:9200/eurodata/schemas/<schema_id>
+        url = config.es_base_url['rows']+'/_search'
+        q = {"query":{"match_all":{}}, "size":0}
+        resp = requests.post(url, data=json.dumps(q))
+        data = resp.json()
+        # Return the full Elasticsearch object as a result
+        return data['hits']['total']
+# The API URLs all start with /api/v1, in case we need to implement different versions later
+api.add_resource(CountRows, config.api_base_url+'/count')
+
 class Row(Resource):
  
     def get(self, row_id):
@@ -52,20 +66,6 @@ class Row(Resource):
 
 # The API URLs all start with /api/v1, in case we need to implement different versions later
 api.add_resource(Row, config.api_base_url+'/rows/<row_id>')
-
-class Schema(Resource):
- 
-    def get(self, schema_id):
-        # the base URL for a "schemas" object in Elasticsearch, e.g.
-        # http://localhost:9200/eurodata/schemas/<schema_id>
-        
-        data = resp.json()
-        # Return the full Elasticsearch object as a result
-        schema = data['_source']
-        return schema
-# The API URLs all start with /api/v1, in case we need to implement different versions later
-api.add_resource(Schema, config.api_base_url+'/schemas/<schema_id>')
-
 
 class Search(Resource):
  
