@@ -19,8 +19,13 @@
   <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
   <script type="text/javascript">
   $(function() {
+      
+    $.get( "/api/v1/count", function( count ) {
+      $('#total').text(count + ' rows');
+    });
+
+    results = $('#results');
     $("#query").keyup(function(){
-      results = $('#results');
       var query = $(this).val();
       if (query == "") {
         results.html('');
